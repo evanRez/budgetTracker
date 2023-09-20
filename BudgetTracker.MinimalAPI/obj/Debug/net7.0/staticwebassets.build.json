@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "1Yc3DRpHa/mYy1VYWf0cAyifslKAWByU5cQrwA9qLOM=",
+  "Source": "BudgetTracker.MinimalAPI",
+  "BasePath": "_content/BudgetTracker.MinimalAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
