@@ -10,7 +10,11 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
         public static void MapTransactionEndpoints(this IEndpointRouteBuilder app)
         {
             var trxs = app.MapGroup("api/transactions");
-            trxs.MapGet("", GetAllTransactions);
+            trxs.MapGet("", GetAllTransactions );
+            trxs.MapGet("{id}", GetTransaction );
+            trxs.MapPost("", AddTransaction );
+            trxs.MapDelete("{id}", DeleteTransaction );
+            trxs.MapPut("{id}", UpdateTransaction );
         }
         
         public static async Task<Results<Ok<List<TransactionDTO>>,NotFound<string>>> GetAllTransactions(BudgetTrackerDb db)
@@ -26,31 +30,59 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             }
         }
 
-            // app.MapGet("/transactions/{id}", async (int id, BudgetTrackerDb db) =>
-            // await db.Transactions.FindAsync(id)
-            //     is TransactionDTO transaction
-            //         ? Results.Ok(transaction)
-            //         : Results.NotFound());
+        public static async Task<Results<Ok<TransactionDTO>, NotFound<string>>> GetTransaction(BudgetTrackerDb db, int id)
+        {
+            return await db.Transactions.FindAsync(id)
+                is TransactionDTO transaction
+                    ? TypedResults.Ok(transaction)
+                    : TypedResults.NotFound($"Could not find a transaction with Id: {id}");
+        }
 
-            // app.MapPost("/transactions", async (TransactionDTO transaction, BudgetTrackerDb db) =>
-            // {
-            //     db.Transactions.Add(transaction);
-            //     await db.SaveChangesAsync();
+        public static async Task<Results<Created<TransactionDTO>,BadRequest>> AddTransaction(BudgetTrackerDb db, TransactionDTO dto)
+        {
+            if (await db.Transactions.FirstOrDefaultAsync(
+                t => t.InitiatedDate == dto.InitiatedDate 
+                && t.PostedDate == dto.PostedDate 
+                && t.Description == dto.Description
+                && t.SpentAmount == dto.SpentAmount
+                && t.PaidBackAmount == dto.PaidBackAmount) != null)
+            {
+                return TypedResults.BadRequest();
+            }
+            await db.Transactions.AddAsync(dto);
+            await db.SaveChangesAsync();
+            
+            return TypedResults.Created($"api/transactions/{dto.Id}", dto);
+        }
 
-            //     return Results.Created($"/transactions/{transaction.Id}", transaction);
-            // });
+        public static async Task<Results<Ok<TransactionDTO>, NotFound<string>>> DeleteTransaction(BudgetTrackerDb db, int id)
+        {
+            if (await db.Transactions.FindAsync(id) is TransactionDTO trnx)
+            {
+                db.Transactions.Remove(trnx);
+                await db.SaveChangesAsync();
+                // return Results.Ok(new TransactionDTO(trnx));
+                return TypedResults.Ok(trnx);
+            }
 
-            // app.MapDelete("/transactions/{id}", async (int id, BudgetTrackerDb db) =>
-            // {
-            //     if (await db.Transactions.FindAsync(id) is TransactionDTO todo)
-            //     {
-            //         db.Transactions.Remove(todo);
-            //         await db.SaveChangesAsync();
-            //         return Results.NoContent();
-            //     }
+            return TypedResults.NotFound($"Could not delete Transaction {id}.");
+        }
 
-            //     return Results.NotFound();
-            // });
-        //}
+        public static async Task<Results<Ok<TransactionDTO>, NotFound<string>>> UpdateTransaction(BudgetTrackerDb db, TransactionDTO trnx)
+        {
+            var rec = await db.Transactions.FindAsync(trnx.Id);
+
+            if (rec is null) return TypedResults.NotFound($"No transaction found for {trnx.Id}");
+
+            rec.Description = trnx.Description;
+            rec.PostedDate = trnx.PostedDate;
+            rec.InitiatedDate = trnx.InitiatedDate;
+            rec.PaidBackAmount = trnx.PaidBackAmount;
+
+            await db.SaveChangesAsync();
+
+            return TypedResults.Ok(rec);
+        }
+
     }
 }
