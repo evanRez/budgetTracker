@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "SpaFxCHzOVahqZt8t7v1/3RwPXJskJrigKDF8I8JlXsmLpzfAth3ZBiJjtm32850kMIxnEfgDjWgLWCAh0ewZg==",
+  "dgSpecHash": "4A2p7oqbYXXtPF/bEb/oXVeWIhwnInX4+8QbHpRKgLIWGnzx29TqLW6HE4Y/p7O4mHqPAUMACwKT+Jzigx0zGw==",
   "success": true,
   "projectFilePath": "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/BudgetTracker.MinimalAPI.csproj",
   "expectedPackageFiles": [
     "/Users/evanreznicek/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
+    "/Users/evanreznicek/.nuget/packages/microsoft.aspnetcore.openapi/7.0.12/microsoft.aspnetcore.openapi.7.0.12.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/microsoft.entityframeworkcore/7.0.11/microsoft.entityframeworkcore.7.0.11.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/microsoft.entityframeworkcore.abstractions/7.0.11/microsoft.entityframeworkcore.abstractions.7.0.11.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/microsoft.entityframeworkcore.analyzers/7.0.11/microsoft.entityframeworkcore.analyzers.7.0.11.nupkg.sha512",
@@ -21,9 +22,13 @@
     "/Users/evanreznicek/.nuget/packages/microsoft.extensions.logging.abstractions/7.0.0/microsoft.extensions.logging.abstractions.7.0.0.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/microsoft.extensions.options/7.0.0/microsoft.extensions.options.7.0.0.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/microsoft.extensions.primitives/7.0.0/microsoft.extensions.primitives.7.0.0.nupkg.sha512",
+    "/Users/evanreznicek/.nuget/packages/microsoft.openapi/1.4.3/microsoft.openapi.1.4.3.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/mono.texttemplating/2.2.1/mono.texttemplating.2.2.1.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/npgsql/7.0.6/npgsql.7.0.6.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/npgsql.entityframeworkcore.postgresql/7.0.11/npgsql.entityframeworkcore.postgresql.7.0.11.nupkg.sha512",
+    "/Users/evanreznicek/.nuget/packages/swashbuckle.aspnetcore.swagger/6.5.0/swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
+    "/Users/evanreznicek/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.5.0/swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",
+    "/Users/evanreznicek/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.5.0/swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/system.codedom/4.4.0/system.codedom.4.4.0.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/system.text.encodings.web/7.0.0/system.text.encodings.web.7.0.0.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/system.text.json/7.0.0/system.text.json.7.0.0.nupkg.sha512"

@@ -69,3 +69,9 @@ D:/Docker/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/obj/Debug/net7
 /Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/obj/Debug/net7.0/BudgetTracker.MinimalAPI.pdb
 /Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/obj/Debug/net7.0/BudgetTracker.MinimalAPI.genruntimeconfig.cache
 /Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/obj/Debug/net7.0/ref/BudgetTracker.MinimalAPI.dll
+/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/bin/Debug/net7.0/Microsoft.AspNetCore.OpenApi.dll
+/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/bin/Debug/net7.0/Microsoft.OpenApi.dll
+/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/bin/Debug/net7.0/Swashbuckle.AspNetCore.Swagger.dll
+/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/bin/Debug/net7.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/bin/Debug/net7.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/obj/Debug/net7.0/BudgetTracker.MinimalAPI.MvcApplicationPartsAssemblyInfo.cs
