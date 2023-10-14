@@ -1,24 +1,18 @@
 using BudgetTracker.MinimalAPI.DataAccess;
 using BudgetTracker.MinimalAPI.RouteHandlers;
-using Microsoft.EntityFrameworkCore;
 
-namespace BudgetTracker.MinimalAPI
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
-           
-            builder.Services.AddDbContext<BudgetTrackerDb>();
 
-            var app = builder.Build();
+var builder = WebApplication.CreateBuilder(args);
 
-            app.MapTransactionEndpoints();
+builder.Services.AddDbContext<BudgetTrackerDb>();
 
-            app.MapGet("/", () => "Hello World!");
+var app = builder.Build();
 
-            app.Run();
-        }
-    }
-}
+app.MapTransactionEndpoints();
+
+app.MapGet("/", () => "Hello World!");
+
+app.Run();
+
+
+            
