@@ -1043,36 +1043,32 @@
     ]
   },
   "packageFolders": {
-    "C:\\Nuget\\NugetPackages": {}
+    "/Users/evanreznicek/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Docker\\BudgetTracker\\BudgetTrackerApp\\BudgetTracker.MinimalAPI\\BudgetTracker.MinimalAPI.csproj",
+      "projectUniqueName": "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/BudgetTracker.MinimalAPI.csproj",
       "projectName": "BudgetTracker.MinimalAPI",
-      "projectPath": "D:\\Docker\\BudgetTracker\\BudgetTrackerApp\\BudgetTracker.MinimalAPI\\BudgetTracker.MinimalAPI.csproj",
-      "packagesPath": "C:\\Nuget\\NugetPackages",
-      "outputPath": "D:\\Docker\\BudgetTracker\\BudgetTrackerApp\\BudgetTracker.MinimalAPI\\obj\\",
+      "projectPath": "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/BudgetTracker.MinimalAPI.csproj",
+      "packagesPath": "/Users/evanreznicek/.nuget/packages/",
+      "outputPath": "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\vru25988\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/evanreznicek/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "c:\\program files\\dotnet\\sdk\\7.0.304\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
-        "https://api.nuget.org/v3/index.json": {},
-        "https://nuget.deq.virginia.gov/nuget/": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\Docker\\BudgetTracker\\BudgetTrackerApp\\ClassLib\\ClassLib.csproj": {
-              "projectPath": "D:\\Docker\\BudgetTracker\\BudgetTrackerApp\\ClassLib\\ClassLib.csproj"
+            "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/ClassLib/ClassLib.csproj": {
+              "projectPath": "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/ClassLib/ClassLib.csproj"
             }
           }
         }
@@ -1121,7 +1117,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "c:\\program files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.100/RuntimeIdentifierGraph.json"
       }
     }
   }

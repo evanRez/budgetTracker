@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "PD1hyQGD+C+mqOO331FoBtLwdE5jGY2zY1/VWy35VSHVJEMRj1ewDjDgmRoryoviEotCDRDjMGj3vBW1NOb8wg==",
+  "dgSpecHash": "24F/wMUZNSDtSjzeWbkEFAbPgJVXXP9gmYzte2EuTWVxi/67Lyq5/20u9ZJkw5PVKeppRrb3wI/uDDwB9Q33NA==",
   "success": true,
-  "projectFilePath": "D:\\Docker\\BudgetTracker\\BudgetTrackerApp\\ClassLib\\ClassLib.csproj",
+  "projectFilePath": "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/ClassLib/ClassLib.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

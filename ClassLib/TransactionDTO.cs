@@ -1,13 +1,11 @@
-﻿using System.ComponentModel;
-
-namespace ClassLib;
+﻿namespace ClassLib;
 
 public class TransactionDTO
 {
     public int Id { get; set; }
     public DateOnly InitiatedDate { get; set; }
     public DateOnly PostedDate { get; set; }
-    public required String Description { get; set; }
-    public Decimal? SpentAmount {get; set;}
-    public Decimal? PaidBackAmount { get; set;}
+    public required string Description { get; set; }
+    public decimal? SpentAmount {get; set;}
+    public decimal? PaidBackAmount { get; set;}
 }

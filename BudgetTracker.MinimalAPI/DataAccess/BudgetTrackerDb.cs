@@ -1,7 +1,6 @@
 ﻿using ClassLib;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using System.Transactions;
 
 namespace BudgetTracker.MinimalAPI.DataAccess
 {
@@ -18,7 +17,7 @@ namespace BudgetTracker.MinimalAPI.DataAccess
                 .AddUserSecrets(Assembly.GetExecutingAssembly())
                 .Build();
 
-            var connectionString = configuration["ConnectionStrings:awsConnection"];
+            var connectionString = configuration["ConnectionStrings:Postgres"];
 
             optionsBuilder.UseNpgsql(connectionString);
         }

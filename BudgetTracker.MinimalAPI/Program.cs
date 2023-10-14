@@ -1,6 +1,6 @@
 using BudgetTracker.MinimalAPI.DataAccess;
+using BudgetTracker.MinimalAPI.RouteHandlers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BudgetTracker.MinimalAPI
 {
@@ -9,11 +9,12 @@ namespace BudgetTracker.MinimalAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var connectionString = builder.Configuration["ConnectionStrings:awsConnection"];
-
-            builder.Services.AddDbContext<BudgetTrackerDb>(options => options.UseNpgsql(connectionString));
+           
+            builder.Services.AddDbContext<BudgetTrackerDb>();
 
             var app = builder.Build();
+
+            app.MapTransactionEndpoints();
 
             app.MapGet("/", () => "Hello World!");
 
