@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "24F/wMUZNSDtSjzeWbkEFAbPgJVXXP9gmYzte2EuTWVxi/67Lyq5/20u9ZJkw5PVKeppRrb3wI/uDDwB9Q33NA==",
+  "dgSpecHash": "RmbkxvaFVkWurNdnCVpFjzwel9/usDbcMS1jFRd37i3g6IODVr/Dn5AoRKh5w/IEBBWPPMkfrXqe6FZAxgEpEQ==",
   "success": true,
   "projectFilePath": "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/ClassLib/ClassLib.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/evanreznicek/.nuget/packages/csvhelper/30.0.1/csvhelper.30.0.1.nupkg.sha512"
+  ],
   "logs": []
 }
