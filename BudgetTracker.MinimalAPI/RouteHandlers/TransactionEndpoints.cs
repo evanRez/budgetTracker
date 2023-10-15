@@ -1,5 +1,6 @@
 ﻿using BudgetTracker.MinimalAPI.DataAccess;
-using ClassLib;
+using BudgetTracker.MinimalAPI.Helpers;
+using ClassLib.Models.Transactions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             trxs.MapPost("", AddTransaction );
             trxs.MapDelete("{id}", DeleteTransaction );
             trxs.MapPut("{id}", UpdateTransaction );
+            trxs.MapPost("/csv", AddTransactionsCSV );
         }
         
         public static async Task<Results<Ok<List<TransactionDTO>>,NotFound<string>>> GetAllTransactions(BudgetTrackerDb db)
@@ -82,6 +84,21 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             await db.SaveChangesAsync();
 
             return TypedResults.Ok(rec);
+        }
+
+        public static async Task<Results<Ok<List<TransactionDTO>>, BadRequest<string>>> AddTransactionsCSV(BudgetTrackerDb db, CsvService csvService, IFormFileCollection file)
+        {
+            var trxns = csvService.ReadCSV<TransactionDTO>(file[0].OpenReadStream());
+            if (trxns is null)
+            {
+                return TypedResults.BadRequest("Could not parse the provided .csv file.");
+            }
+
+            var formattedTrxns = trxns.ToList();
+            await db.Transactions.AddRangeAsync(trxns);
+            await db.SaveChangesAsync();
+
+            return TypedResults.Ok(formattedTrxns);
         }
 
     }

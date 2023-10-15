@@ -1,4 +1,4 @@
-﻿using ClassLib;
+﻿using ClassLib.Models.Transactions;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 

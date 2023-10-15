@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "oDIUcYVF6JRRhFxsCxmr9wEPvVVkpa0qNrnW2HHATq9M6kxIJAh1+WnNj4sZERiaRN9sOjtm824ciQhA+U3BgQ==",
+  "dgSpecHash": "f1bn+ci6uu4qGtteuPnp94PNECzgZhh4GeIhSHsTTlxLi4iepypGDFVauXkRd/SY2TxUyVjW0HMGxS69ebnPaQ==",
   "success": true,
   "projectFilePath": "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.UnitTests/BudgetTracker.UnitTests.csproj",
   "expectedPackageFiles": [
     "/Users/evanreznicek/.nuget/packages/castle.core/5.1.1/castle.core.5.1.1.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/coverlet.collector/3.2.0/coverlet.collector.3.2.0.nupkg.sha512",
+    "/Users/evanreznicek/.nuget/packages/csvhelper/30.0.1/csvhelper.30.0.1.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/microsoft.aspnetcore.openapi/7.0.12/microsoft.aspnetcore.openapi.7.0.12.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/microsoft.codecoverage/17.5.0/microsoft.codecoverage.17.5.0.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/microsoft.entityframeworkcore/7.0.11/microsoft.entityframeworkcore.7.0.11.nupkg.sha512",

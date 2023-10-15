@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "4A2p7oqbYXXtPF/bEb/oXVeWIhwnInX4+8QbHpRKgLIWGnzx29TqLW6HE4Y/p7O4mHqPAUMACwKT+Jzigx0zGw==",
+  "dgSpecHash": "xthHtIfApYM13ILBDseiQq8vyZptpZ5TheH9MKMdRmZfIU1gO6CDQ3ikAD8atHdyyVpTp61g0eLpeuhxAuqNcA==",
   "success": true,
   "projectFilePath": "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/BudgetTracker.MinimalAPI/BudgetTracker.MinimalAPI.csproj",
   "expectedPackageFiles": [
+    "/Users/evanreznicek/.nuget/packages/csvhelper/30.0.1/csvhelper.30.0.1.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/microsoft.aspnetcore.openapi/7.0.12/microsoft.aspnetcore.openapi.7.0.12.nupkg.sha512",
     "/Users/evanreznicek/.nuget/packages/microsoft.entityframeworkcore/7.0.11/microsoft.entityframeworkcore.7.0.11.nupkg.sha512",
