@@ -16,7 +16,7 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             trxs.MapPost("", AddTransaction );
             trxs.MapDelete("{id}", DeleteTransaction );
             trxs.MapPut("{id}", UpdateTransaction );
-            trxs.MapPost("/csv", AddTransactionsCSV );
+            trxs.MapPost("/add-from-csv", AddTransactionsCSV );
         }
         
         public static async Task<Results<Ok<List<TransactionDTO>>,NotFound<string>>> GetAllTransactions(BudgetTrackerDb db)
@@ -86,19 +86,63 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             return TypedResults.Ok(rec);
         }
 
-        public static async Task<Results<Ok<List<TransactionDTO>>, BadRequest<string>>> AddTransactionsCSV(BudgetTrackerDb db, CsvService csvService, IFormFileCollection file)
+        public static async Task<Results<Ok<List<TransactionDTO>>, Ok<string>,  BadRequest<string>>> AddTransactionsCSV(BudgetTrackerDb db, CsvService csvService, IFormFileCollection file)
         {
-            var trxns = csvService.ReadCSV<TransactionDTO>(file[0].OpenReadStream());
-            if (trxns is null)
+            try 
             {
-                return TypedResults.BadRequest("Could not parse the provided .csv file.");
+                var trxns = csvService.ReadCSV<TransactionDTO>(file[0].OpenReadStream());
+                var formattedTrxns = trxns.ToList();
+                var filteredTrxns = formattedTrxns
+                    .Where(trx => !db.Transactions
+                        .Any(t => t.InitiatedDate == trx.InitiatedDate
+                            && t.PostedDate == trx.PostedDate
+                            && t.Description == trx.Description
+                            && t.SpentAmount == trx.SpentAmount
+                            && t.PaidBackAmount == trx.PaidBackAmount))
+                    .ToList();
+                if (!filteredTrxns.Any())
+                {
+                    return TypedResults.Ok("These records have already been added!");
+                }
+                await db.Transactions.AddRangeAsync(filteredTrxns);
+                await db.SaveChangesAsync();
+                return TypedResults.Ok(formattedTrxns);
             }
+            catch (Exception ex)
+            {
+                //https://stackoverflow.com/questions/21609348/in-csvhelper-how-to-catch-a-conversion-error-and-know-what-field-and-what-row-it
+                var err = ex.Data["CsvHelper"];
+                return TypedResults.BadRequest($"Could not parse the provided .csv file: {err}");
+            }
+        }
 
-            var formattedTrxns = trxns.ToList();
-            await db.Transactions.AddRangeAsync(trxns);
-            await db.SaveChangesAsync();
-
-            return TypedResults.Ok(formattedTrxns);
+        public static async Task<Results<Ok<List<TransactionDTO>>,Ok<string>, BadRequest<string>>> DeleteTransactionsCSV(BudgetTrackerDb db, CsvService csvService, IFormFileCollection file)
+        {
+            try 
+            {
+                var trxns = csvService.ReadCSV<TransactionDTO>(file[0].OpenReadStream());
+                var formattedTrxns = trxns.ToList();
+                var filteredTrxns = formattedTrxns
+                    .Where(trx => db.Transactions
+                        .Any(t => t.InitiatedDate == trx.InitiatedDate
+                            && t.PostedDate == trx.PostedDate
+                            && t.Description == trx.Description
+                            && t.SpentAmount == trx.SpentAmount
+                            && t.PaidBackAmount == trx.PaidBackAmount))
+                    .ToList();
+                if (!filteredTrxns.Any())
+                {
+                    return TypedResults.Ok("No records match, nothing to delete");
+                }
+                db.Transactions.RemoveRange(filteredTrxns);
+                await db.SaveChangesAsync();
+                return TypedResults.Ok(formattedTrxns);
+            }
+            catch (Exception ex)
+            {
+                var err = ex.Data["CsvHelper"];
+                return TypedResults.BadRequest($"Could not parse the provided .csv file: {err}");
+            }
         }
 
     }

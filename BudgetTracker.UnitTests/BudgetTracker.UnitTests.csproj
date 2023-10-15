@@ -28,4 +28,10 @@
     <ProjectReference Include="..\ClassLib\ClassLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="TestData\SampleData.CSV">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>  
+  </ItemGroup>
+
 </Project>

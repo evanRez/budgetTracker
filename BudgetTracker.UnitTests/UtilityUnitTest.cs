@@ -1,6 +1,6 @@
 using BudgetTracker.MinimalAPI.Helpers;
 using BudgetTracker.UnitTests.TestData;
-using Xunit.Sdk;
+using ClassLib.Models.Transactions;
 
 namespace BudgetTracker.UnitTests;
 
@@ -46,5 +46,17 @@ public class UtilityUnitTest
 
         var result = utility.IsWithinBudget(transactions.First(), transactions.Skip(1).ToArray());
         Assert.True(result);
+    }
+    [Theory]
+    [InlineData("TestData/SampleData.CSV")]
+    public void CSVWillParse(string csvLeaf)
+    {
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), csvLeaf);
+        using (FileStream fs = File.Open(filePath, FileMode.Open))
+        {
+            var csvService = new CsvService();
+            var records = csvService.ReadCSV<TransactionDTO>(fs).ToList();
+            Assert.True(records.Count() == 5);
+        }
     }
 }
