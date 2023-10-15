@@ -18,7 +18,7 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             trxs.MapDelete("{id}", DeleteTransaction );
             trxs.MapPut("{id}", UpdateTransaction );
             trxs.MapPost("/add-from-csv", AddTransactionsCSV );
-            trxs.MapDelete("/dlete-from-csv", DeleteTransactionsCSV );
+            trxs.MapDelete("/delete-from-csv", DeleteTransactionsCSV );
         }
         
         public static async Task<Results<Ok<List<TransactionDTO>>,NotFound<string>>> GetAllTransactions(BudgetTrackerDb db)
