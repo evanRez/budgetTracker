@@ -2,6 +2,7 @@
 using BudgetTracker.MinimalAPI.Helpers;
 using ClassLib.Models.Transactions;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BudgetTracker.MinimalAPI.RouteHandlers
@@ -17,6 +18,7 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             trxs.MapDelete("{id}", DeleteTransaction );
             trxs.MapPut("{id}", UpdateTransaction );
             trxs.MapPost("/add-from-csv", AddTransactionsCSV );
+            trxs.MapDelete("/dlete-from-csv", DeleteTransactionsCSV );
         }
         
         public static async Task<Results<Ok<List<TransactionDTO>>,NotFound<string>>> GetAllTransactions(BudgetTrackerDb db)
@@ -86,11 +88,12 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             return TypedResults.Ok(rec);
         }
 
-        public static async Task<Results<Ok<List<TransactionDTO>>, Ok<string>,  BadRequest<string>>> AddTransactionsCSV(BudgetTrackerDb db, CsvService csvService, IFormFileCollection file)
+        public static async Task<Results<Ok<List<TransactionDTO>>, Ok<string>,BadRequest<string>>> AddTransactionsCSV([FromForm] IFormFile file, [FromServices] BudgetTrackerDb db, [FromServices] CsvService csvService )
         {
             try 
             {
-                var trxns = csvService.ReadCSV<TransactionDTO>(file[0].OpenReadStream());
+                using var stream = file.OpenReadStream();
+                var trxns = csvService.ReadCSV<TransactionDTO>(stream);
                 var formattedTrxns = trxns.ToList();
                 var filteredTrxns = formattedTrxns
                     .Where(trx => !db.Transactions
@@ -116,11 +119,12 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             }
         }
 
-        public static async Task<Results<Ok<List<TransactionDTO>>,Ok<string>, BadRequest<string>>> DeleteTransactionsCSV(BudgetTrackerDb db, CsvService csvService, IFormFileCollection file)
+        public static async Task<Results<Ok<List<TransactionDTO>>,Ok<string>, BadRequest<string>>> DeleteTransactionsCSV([FromServices] BudgetTrackerDb db, [FromServices] CsvService csvService,[FromForm] IFormFile file)
         {
             try 
             {
-                var trxns = csvService.ReadCSV<TransactionDTO>(file[0].OpenReadStream());
+                using var stream = file.OpenReadStream();
+                var trxns = csvService.ReadCSV<TransactionDTO>(stream);
                 var formattedTrxns = trxns.ToList();
                 var filteredTrxns = formattedTrxns
                     .Where(trx => db.Transactions

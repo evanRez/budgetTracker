@@ -57,6 +57,7 @@ public class UtilityUnitTest
             var csvService = new CsvService();
             var records = csvService.ReadCSV<TransactionDTO>(fs).ToList();
             Assert.True(records.Count() == 5);
+            Assert.Equal("MOB PAYMENT RECEIVED", records[0].Description);
         }
     }
 }
