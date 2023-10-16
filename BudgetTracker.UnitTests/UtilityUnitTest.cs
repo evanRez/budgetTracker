@@ -1,10 +1,11 @@
 using BudgetTracker.MinimalAPI.Helpers;
 using BudgetTracker.UnitTests.TestData;
 using ClassLib.Models.Transactions;
+using Microsoft.Playwright;
 
 namespace BudgetTracker.UnitTests;
 
-public class UtilityUnitTest
+public class UtilityUnitTest : IClassFixture<APITestFixture>
 {
     [Theory]
     [InlineData("11/09/2022", "11/24/2022", "11/15/2022")]

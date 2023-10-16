@@ -4,11 +4,14 @@ using Microsoft.Playwright;
 namespace BudgetTracker.UnitTests;
 public class APITestFixture : IAsyncLifetime
 {
-    public IAPIRequestContext Request = null;
+    public IAPIRequestContext? Request = null;
 
     public async Task DisposeAsync()
     {
-        await Request.DisposeAsync();
+        if (Request is not null)
+        {
+            await Request.DisposeAsync();
+        }
     }
 
     public async Task InitializeAsync()
