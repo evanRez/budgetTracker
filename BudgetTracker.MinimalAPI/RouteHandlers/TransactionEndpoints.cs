@@ -1,5 +1,5 @@
 ﻿using BudgetTracker.MinimalAPI.DataAccess;
-using BudgetTracker.MinimalAPI.Helpers;
+using BudgetTracker.MinimalAPI.Helpers.Interfaces;
 using ClassLib.Models.Transactions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -88,7 +88,7 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             return TypedResults.Ok(rec);
         }
 
-        public static async Task<Results<Ok<List<TransactionDTO>>, Ok<string>,BadRequest<string>>> AddTransactionsCSV([FromForm] IFormFile file, [FromServices] BudgetTrackerDb db, [FromServices] CsvService csvService )
+        public static async Task<Results<Ok<List<TransactionDTO>>, Ok<string>,BadRequest<string>>> AddTransactionsCSV([FromForm] IFormFile file, [FromServices] BudgetTrackerDb db, [FromServices] ICsvService csvService )
         {
             try 
             {
@@ -119,7 +119,7 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             }
         }
 
-        public static async Task<Results<Ok<List<TransactionDTO>>,Ok<string>, BadRequest<string>>> DeleteTransactionsCSV([FromServices] BudgetTrackerDb db, [FromServices] CsvService csvService,[FromForm] IFormFile file)
+        public static async Task<Results<Ok<List<TransactionDTO>>,Ok<string>, BadRequest<string>>> DeleteTransactionsCSV([FromServices] BudgetTrackerDb db, [FromServices] ICsvService csvService,[FromForm] IFormFile file)
         {
             try 
             {

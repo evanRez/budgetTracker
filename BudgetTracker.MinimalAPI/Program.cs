@@ -1,7 +1,7 @@
 using BudgetTracker.MinimalAPI.DataAccess;
 using BudgetTracker.MinimalAPI.Helpers;
+using BudgetTracker.MinimalAPI.Helpers.Interfaces;
 using BudgetTracker.MinimalAPI.RouteHandlers;
-using Namespace;
 
 
 var builder = WebApplication.CreateBuilder(args);

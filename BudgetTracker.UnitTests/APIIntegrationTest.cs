@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Playwright;
 using Microsoft.Playwright.Core;
@@ -27,26 +28,29 @@ public class APIIntegrationTest : IClassFixture<APITestFixture>
     }
 
     [Theory]
-    [InlineData("TestData/SampleData.CSV")]
+    [InlineData("SampleData.CSV")]
     public async Task API_ShouldLoadCSVDataAndReturnJson(string partialPath)
     {
-        var filePath = Path.Combine(Directory.GetCurrentDirectory(), partialPath);
+        //    var multipart = _fixture!.Request!.CreateFormData();
+        //    multipart.Set("Transaction Date", "12/25/22");
+        //    multipart.Set("Posted Date","12/27/22");
+        //    multipart.Set("Description", "MOB PAYMENT RECEIVED");
+        //    multipart.Set("Debit", "");
+        //    multipart.Set("Credit", "1021.94");
         var file = new FilePayload()
         {
-            Name = "f.js",
-            MimeType = "text/javascript",
-            Buffer = System.Text.Encoding.UTF8.GetBytes(filePath)
+            Name = partialPath,
+            MimeType = "text/csv",
+            Buffer = Encoding.UTF8.GetBytes(File.ReadAllText("TestData/" + partialPath))
         };
-        
         var multipart = _fixture!.Request!.CreateFormData();
         multipart.Set("fileField", file);
-        //multipart.Set("fileField", filePath);
-        var response = await _fixture!.Request!.FetchAsync("api/transactions/add-from-csv", new() { Method = "post", Multipart = multipart });
+        var response = await _fixture!.Request!.PostAsync("api/transactions/add-from-csv",
+         new() { Multipart = multipart });
 
-        var data = await response.JsonAsync();
+        var status =  response.Status;
 
-        var hasValue = data.HasValue;
-        Assert.True(hasValue);
+        Assert.Equal(200, status);
     }
     
 }
