@@ -28,3 +28,26 @@ public class TransactionDTO
     [Name("Credit")]
     public decimal? PaidBackAmount { get; set;}
 }
+
+public class TransactionComparer : IEqualityComparer<TransactionDTO>
+{
+    public bool Equals(TransactionDTO? x, TransactionDTO? y)
+    {
+        if (x == null || y == null) return false;
+        return x.Description == y.Description 
+        && x.InitiatedDate == y.InitiatedDate
+        && x.PostedDate == y.PostedDate
+        && x.SpentAmount == y.SpentAmount
+        && x.PaidBackAmount == y.PaidBackAmount;
+    }
+
+    public int GetHashCode(TransactionDTO trx)
+    {
+        if (trx == null) return 0;
+        return trx.Description.GetHashCode() 
+        			^ trx.InitiatedDate.GetHashCode()
+                    ^ trx.PostedDate.GetHashCode()
+                    ^ trx.SpentAmount.GetHashCode()
+                    ^ trx.PaidBackAmount.GetHashCode();
+    }
+}

@@ -1,4 +1,5 @@
-﻿using BudgetTracker.MinimalAPI.DataAccess;
+﻿using System.Linq;
+using BudgetTracker.MinimalAPI.DataAccess;
 using BudgetTracker.MinimalAPI.Helpers.Interfaces;
 using ClassLib.Models.Transactions;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -74,14 +75,16 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
 
         public static async Task<Results<Ok<TransactionDTO>, NotFound<string>>> UpdateTransaction(BudgetTrackerDb db, TransactionDTO trnx)
         {
+            //db.Update(trnx);
             var rec = await db.Transactions.FindAsync(trnx.Id);
 
             if (rec is null) return TypedResults.NotFound($"No transaction found for {trnx.Id}");
 
-            rec.Description = trnx.Description;
-            rec.PostedDate = trnx.PostedDate;
-            rec.InitiatedDate = trnx.InitiatedDate;
-            rec.PaidBackAmount = trnx.PaidBackAmount;
+            // rec.Description = trnx.Description;
+            // rec.PostedDate = trnx.PostedDate;
+            // rec.InitiatedDate = trnx.InitiatedDate;
+            // rec.PaidBackAmount = trnx.PaidBackAmount;
+            db.Entry(rec).CurrentValues.SetValues(trnx);
 
             await db.SaveChangesAsync();
 
@@ -119,25 +122,22 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             }
         }
 
-        public static async Task<Results<Ok<List<TransactionDTO>>,Ok<string>, BadRequest<string>>> DeleteTransactionsCSV([FromServices] BudgetTrackerDb db, [FromServices] ICsvService csvService,[FromForm] IFormFile file)
+        public static async Task<Results<Ok<List<TransactionDTO>>,Ok<string>, BadRequest<string>>> DeleteTransactionsCSV([FromForm] IFormFile file, [FromServices] BudgetTrackerDb db, [FromServices] ICsvService csvService )
         {
             try 
             {
                 using var stream = file.OpenReadStream();
                 var trxns = csvService.ReadCSV<TransactionDTO>(stream);
                 var formattedTrxns = trxns.ToList();
-                var filteredTrxns = formattedTrxns
-                    .Where(trx => db.Transactions
-                        .Any(t => t.InitiatedDate == trx.InitiatedDate
-                            && t.PostedDate == trx.PostedDate
-                            && t.Description == trx.Description
-                            && t.SpentAmount == trx.SpentAmount
-                            && t.PaidBackAmount == trx.PaidBackAmount))
-                    .ToList();
+                var trxComparer = new TransactionComparer();
+                var filteredTrxns = db.Transactions.AsEnumerable().Intersect(
+                    formattedTrxns, trxComparer).ToList();
+
                 if (!filteredTrxns.Any())
                 {
                     return TypedResults.Ok("No records match, nothing to delete");
                 }
+
                 db.Transactions.RemoveRange(filteredTrxns);
                 await db.SaveChangesAsync();
                 return TypedResults.Ok(formattedTrxns);
@@ -145,7 +145,7 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             catch (Exception ex)
             {
                 var err = ex.Data["CsvHelper"];
-                return TypedResults.BadRequest($"Could not parse the provided .csv file: {err}");
+                return TypedResults.BadRequest($"Could not parse the provided .csv file: {err}: {ex}");
             }
         }
 
