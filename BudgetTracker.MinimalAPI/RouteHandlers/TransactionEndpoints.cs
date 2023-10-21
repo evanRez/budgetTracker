@@ -148,16 +148,16 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             try 
             {
                 using var stream = file.OpenReadStream();
-                var trxns = csvService.ReadCSV<TransactionDTO>(stream);
+                var trxns = csvService.ReadCSV<TransactionDTO>(stream).ToList();
                 // var formattedTrxns = trxns.AsEnumerable();
                 var trxComparer = new TransactionComparer();
                 // var filteredTrxns =  await db.Transactions
                 //     .AsQueryable()
                 //     .Intersect(formattedTrxns, trxComparer)
                 //     .ToListAsync();
-                
+
                 //TODO: Improve performance, convert to async
-                var filteredTrxns =  db.Transactions
+                var filteredTrxns = db.Transactions
                     .AsEnumerable()
                     .Intersect(trxns, trxComparer)
                     .ToList();
@@ -171,15 +171,15 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
                 //         && t.SpentAmount == e.SpentAmount))
                 //     .ToListAsync();
 
-                // var filteredTrxns = db.Transactions
-                //     .AsEnumerable()
-                //     .Where(x => trxns.Any( t => 
-                //         t.Description == x.Description 
-                //         && t.InitiatedDate == x.InitiatedDate
-                //         && t.PostedDate == x.PostedDate
-                //         && t.PaidBackAmount == x.PaidBackAmount
-                //         && t.SpentAmount == x.SpentAmount))
-                //     .ToList();
+                //var filteredTrxns = db.Transactions
+                //    .AsEnumerable()
+                //    .Where(x => trxns.Any(t =>
+                //        t.Description == x.Description
+                //        && t.InitiatedDate == x.InitiatedDate
+                //        && t.PostedDate == x.PostedDate
+                //        && t.PaidBackAmount == x.PaidBackAmount
+                //        && t.SpentAmount == x.SpentAmount))
+                //    .ToList();
 
                 if (!filteredTrxns.Any())
                 {

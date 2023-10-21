@@ -49,25 +49,28 @@
     ]
   },
   "packageFolders": {
-    "/Users/evanreznicek/.nuget/packages/": {}
+    "C:\\Nuget\\NugetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/ClassLib/ClassLib.csproj",
+      "projectUniqueName": "C:\\Users\\vru25988\\Projects\\BudgetTracker\\budgetTracker\\ClassLib\\ClassLib.csproj",
       "projectName": "ClassLib",
-      "projectPath": "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/ClassLib/ClassLib.csproj",
-      "packagesPath": "/Users/evanreznicek/.nuget/packages/",
-      "outputPath": "/Users/evanreznicek/Projects/BudgetTracker/BudgetTrackerApp/ClassLib/obj/",
+      "projectPath": "C:\\Users\\vru25988\\Projects\\BudgetTracker\\budgetTracker\\ClassLib\\ClassLib.csproj",
+      "packagesPath": "C:\\Nuget\\NugetPackages",
+      "outputPath": "C:\\Users\\vru25988\\Projects\\BudgetTracker\\budgetTracker\\ClassLib\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/evanreznicek/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\vru25988\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
-        "https://api.nuget.org/v3/index.json": {}
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {},
+        "https://nuget.deq.virginia.gov/nuget/": {}
       },
       "frameworks": {
         "net7.0": {
@@ -106,7 +109,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.100/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "c:\\program files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
       }
     }
   }

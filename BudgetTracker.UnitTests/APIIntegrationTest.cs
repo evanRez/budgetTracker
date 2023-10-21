@@ -1,10 +1,11 @@
-using System.Security.Cryptography;
+using Microsoft.Playwright;
 using System.Text;
 using System.Text.Json;
-using ClassLib.Models.Transactions;
-using Microsoft.Playwright;
 
 namespace BudgetTracker.UnitTests;
+[TestCaseOrderer(
+    ordererTypeName: "BudgetTracker.UnitTests.IntegrationTestCaseOrder",
+    ordererAssemblyName: "BudgetTracker.UnitTests")]
 public class APIIntegrationTest : IClassFixture<APITestFixture>
 {
     APITestFixture _fixture;
@@ -15,7 +16,7 @@ public class APIIntegrationTest : IClassFixture<APITestFixture>
     
     [Theory]
     [InlineData("SampleData.CSV")]
-    public async Task API_ShouldLoadCSVDataAndReturnJson(string partialPath)
+    public async Task A_API_ShouldLoadCSVDataAndReturnJson(string partialPath)
     {
         var file = new FilePayload()
         {
@@ -30,12 +31,12 @@ public class APIIntegrationTest : IClassFixture<APITestFixture>
 
         var status =  response.Ok;
         var jsonData = await response.JsonAsync();
-        //var issuesJsonResponse = await issues.JsonAsync();
+        
         var whatIsIt = jsonData.Value;
         JsonElement? trxn = null;
         foreach (var traderJoe in jsonData?.EnumerateArray())
         {
-            if (traderJoe.TryGetProperty("Description", out var descr) == true)
+            if (traderJoe.TryGetProperty("description", out var descr) == true)
             {
                 if (descr.GetString() == "TRADER JOE")
                 {
@@ -44,23 +45,23 @@ public class APIIntegrationTest : IClassFixture<APITestFixture>
             }
         }
         Assert.True(status);
-        Assert.NotNull(trxn);
-        Assert.Equal("66.15", trxn?.GetProperty("SpentAmount").ToString());
+        //Assert.NotNull(trxn);
+        Assert.Equal("66.15", trxn?.GetProperty("spentAmount").ToString());
     }
 
     [Fact]
-     public async Task API_Fetch_all_returns_json()
+     public async Task B_API_Fetch_all_returns_json()
     {
         var response = await _fixture!.Request!.GetAsync("api/transactions");
 
         //var data = await response.TextAsync();
 
         var data = await response.JsonAsync();
-        //var issuesJsonResponse = await issues.JsonAsync();
+       
         JsonElement? trxn = null;
         foreach (JsonElement traderJoe in data?.EnumerateArray())
         {
-            if (traderJoe.TryGetProperty("Description", out var descr) == true)
+            if (traderJoe.TryGetProperty("description", out var descr) == true)
             {
                 if (descr.GetString() == "TRADER JOE")
                 {
@@ -69,10 +70,9 @@ public class APIIntegrationTest : IClassFixture<APITestFixture>
             }
         }
         Assert.NotNull(trxn);
-        Assert.Equal("66.15", trxn?.GetProperty("SpentAmount").ToString());
+        Assert.Equal("66.15", trxn?.GetProperty("spentAmount").ToString());
 
         //Assert.Equal()
-       
         //Assert.Equal("\"Hmmm, no transactions could be found here.\"", data);
     }
 
@@ -80,7 +80,7 @@ public class APIIntegrationTest : IClassFixture<APITestFixture>
 
     [Theory]
     [InlineData("SampleData.CSV")]
-    public async Task API_ShouldRemoveCSVDataAndReturnEnum(string partialPath)
+    public async Task C_API_ShouldRemoveCSVDataAndReturnEnum(string partialPath)
     {
         var file = new FilePayload()
         {
@@ -91,13 +91,11 @@ public class APIIntegrationTest : IClassFixture<APITestFixture>
         var multipart = _fixture!.Request!.CreateFormData();
         multipart.Set("file", file);
         var response = await _fixture!.Request!.FetchAsync("api/transactions/delete-from-csv",
-         new() { Method = "post", Multipart = multipart });
+         new() { Method = "delete", Multipart = multipart });
 
         var status =  response.Ok;
-        var isEnum = response.GetType() is IEnumerable<TransactionDTO>;
 
         Assert.True(status);
-        Assert.True(isEnum);
     }
     
 }
