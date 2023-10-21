@@ -91,21 +91,21 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             return TypedResults.Ok(rec);
         }
 
-        public static async Task<Results<Ok<List<TransactionDTO>>, Ok<string>,BadRequest<string>>> AddTransactionsCSV([FromForm] IFormFile file, [FromServices] BudgetTrackerDb db, [FromServices] ICsvService csvService )
+        public static async Task<Results<Ok<IEnumerable<TransactionDTO>>, Ok<string>,BadRequest<string>>> AddTransactionsCSV([FromForm] IFormFile file, [FromServices] BudgetTrackerDb db, [FromServices] ICsvService csvService )
         {
             try 
             {
                 using var stream = file.OpenReadStream();
                 var trxns = csvService.ReadCSV<TransactionDTO>(stream);
-                var formattedTrxns = trxns.ToList();
+                var formattedTrxns = trxns;
                 var filteredTrxns = formattedTrxns
-                    .Where(trx => !db.Transactions
+                    .Where(trx => db.Transactions
                         .Any(t => t.InitiatedDate == trx.InitiatedDate
                             && t.PostedDate == trx.PostedDate
                             && t.Description == trx.Description
                             && t.SpentAmount == trx.SpentAmount
-                            && t.PaidBackAmount == trx.PaidBackAmount))
-                    .ToList();
+                            && t.PaidBackAmount == trx.PaidBackAmount));
+
                 if (!filteredTrxns.Any())
                 {
                     return TypedResults.Ok("These records have already been added!");
@@ -130,8 +130,10 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
                 var trxns = csvService.ReadCSV<TransactionDTO>(stream);
                 var formattedTrxns = trxns.ToList();
                 var trxComparer = new TransactionComparer();
-                var filteredTrxns = db.Transactions.AsEnumerable().Intersect(
-                    formattedTrxns, trxComparer).ToList();
+                var filteredTrxns = await db.Transactions
+                    .AsQueryable()
+                    .Intersect(formattedTrxns, trxComparer)
+                    .ToListAsync();
 
                 if (!filteredTrxns.Any())
                 {
