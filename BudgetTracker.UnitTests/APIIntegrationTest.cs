@@ -31,8 +31,6 @@ public class APIIntegrationTest : IClassFixture<APITestFixture>
 
         var status =  response.Ok;
         var jsonData = await response.JsonAsync();
-        
-        var whatIsIt = jsonData.Value;
         JsonElement? trxn = null;
         foreach (var traderJoe in jsonData?.EnumerateArray())
         {
@@ -45,7 +43,7 @@ public class APIIntegrationTest : IClassFixture<APITestFixture>
             }
         }
         Assert.True(status);
-        //Assert.NotNull(trxn);
+        Assert.NotNull(trxn);
         Assert.Equal("66.15", trxn?.GetProperty("spentAmount").ToString());
     }
 
@@ -53,8 +51,6 @@ public class APIIntegrationTest : IClassFixture<APITestFixture>
      public async Task B_API_Fetch_all_returns_json()
     {
         var response = await _fixture!.Request!.GetAsync("api/transactions");
-
-        //var data = await response.TextAsync();
 
         var data = await response.JsonAsync();
        
@@ -71,9 +67,6 @@ public class APIIntegrationTest : IClassFixture<APITestFixture>
         }
         Assert.NotNull(trxn);
         Assert.Equal("66.15", trxn?.GetProperty("spentAmount").ToString());
-
-        //Assert.Equal()
-        //Assert.Equal("\"Hmmm, no transactions could be found here.\"", data);
     }
 
 

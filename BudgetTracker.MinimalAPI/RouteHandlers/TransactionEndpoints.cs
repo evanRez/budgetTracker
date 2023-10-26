@@ -12,7 +12,8 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
     {
         public static void MapTransactionEndpoints(this IEndpointRouteBuilder app)
         {
-            var trxs = app.MapGroup("api/transactions");
+            var trxs = app.MapGroup("api/transactions")
+                .RequireAuthorization("write:transaction"); //TODO: Add more appropriate Auth policy / role
             trxs.MapGet("", GetAllTransactions );
             trxs.MapGet("{id}", GetTransaction );
             trxs.MapPost("", AddTransaction );
@@ -66,7 +67,6 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             {
                 db.Transactions.Remove(trnx);
                 await db.SaveChangesAsync();
-                // return Results.Ok(new TransactionDTO(trnx));
                 return TypedResults.Ok(trnx);
             }
 
@@ -93,23 +93,7 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             {
                 using var stream = file.OpenReadStream();
                 var trxns = csvService.ReadCSV<TransactionDTO>(stream).ToList();
-                // var existingRecords = await db.Transactions
-                //     .AsQueryable()
-                //     .Where(ex => trxns.Any(t => 
-                //         t.Description == ex.Description
-                //         && t.PostedDate == ex.PostedDate
-                //         && t.InitiatedDate == ex.InitiatedDate
-                //         && t.SpentAmount == ex.SpentAmount))
-                //     .ToListAsync();
-
-                // var newRecords = trxns.Where(t => !existingRecords.Any(
-                //         ex => trxns.Any(t => 
-                //         t.Description == ex.Description
-                //         && t.PostedDate == ex.PostedDate
-                //         && t.InitiatedDate == ex.InitiatedDate
-                //         && t.SpentAmount == ex.SpentAmount)))
-                //         .ToList();
-
+               
                 var filteredTrxns = trxns
                     .Where( trx => !db.Transactions
                         .Any(t => t.InitiatedDate == trx.InitiatedDate
@@ -137,7 +121,6 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             }
             catch (Exception ex)
             {
-                //https://stackoverflow.com/questions/21609348/in-csvhelper-how-to-catch-a-conversion-error-and-know-what-field-and-what-row-it
                 var err = ex.Data["CsvHelper"];
                 return TypedResults.BadRequest($"Could not parse the provided .csv file: {err}");
             }
@@ -149,37 +132,13 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             {
                 using var stream = file.OpenReadStream();
                 var trxns = csvService.ReadCSV<TransactionDTO>(stream).ToList();
-                // var formattedTrxns = trxns.AsEnumerable();
                 var trxComparer = new TransactionComparer();
-                // var filteredTrxns =  await db.Transactions
-                //     .AsQueryable()
-                //     .Intersect(formattedTrxns, trxComparer)
-                //     .ToListAsync();
 
                 //TODO: Improve performance, convert to async
                 var filteredTrxns = db.Transactions
                     .AsEnumerable()
                     .Intersect(trxns, trxComparer)
                     .ToList();
-
-                // var existingRecords = await db.Transactions
-                //     .Where(e => trxns.Any(t => 
-                //         t.Description == e.Description
-                //         && t.InitiatedDate == e.InitiatedDate
-                //         && t.PostedDate == e.PostedDate
-                //         && t.PaidBackAmount == e.PaidBackAmount
-                //         && t.SpentAmount == e.SpentAmount))
-                //     .ToListAsync();
-
-                //var filteredTrxns = db.Transactions
-                //    .AsEnumerable()
-                //    .Where(x => trxns.Any(t =>
-                //        t.Description == x.Description
-                //        && t.InitiatedDate == x.InitiatedDate
-                //        && t.PostedDate == x.PostedDate
-                //        && t.PaidBackAmount == x.PaidBackAmount
-                //        && t.SpentAmount == x.SpentAmount))
-                //    .ToList();
 
                 if (!filteredTrxns.Any())
                 {
