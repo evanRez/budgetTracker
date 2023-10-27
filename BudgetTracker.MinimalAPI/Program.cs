@@ -47,7 +47,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-//app.UseCors(); This caused the app to fail, see why
+
 //app.UseHealthChecks(); Once the app grows, see how we can use  this
 app.UseAuthentication();
 app.UseAuthorization();
