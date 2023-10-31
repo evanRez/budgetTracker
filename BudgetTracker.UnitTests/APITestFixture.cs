@@ -35,15 +35,38 @@ public class APITestFixture : IAsyncLifetime
                .AddUserSecrets(Assembly.GetExecutingAssembly())
                .Build();
 
-        var headers = new Dictionary<string, string>
+        var clientCredentials = new Dictionary<string, string>
         {
             { "grant_type", "client_credentials" },
-            { "client_id", configuration.GetSection("Auth0:Domain").Value.ToString() },
-            { "client_secret", configuration.GetSection("Auth0:ClientSecret").Value.ToString() },
+            { "client_id", configuration.GetSection("Auth0:ClientIdM2M").Value.ToString() },
+            { "client_secret", configuration.GetSection("Auth0:ClientSecretM2M").Value.ToString() },
             { "audience", configuration.GetSection("Auth0:Audience").Value.ToString() },
-            { "access_token_url", configuration.GetSection("Auth0:TokenUrl").Value.ToString() },
+            //{ "access_token_url", configuration.GetSection("Auth0:TokenUrl").Value.ToString() },
             { "scope", "write:transaction" }
         };
+
+        var requestContext = await Playwright.CreateAsync();
+
+        var bearerContext = await requestContext.APIRequest.NewContextAsync(
+            new APIRequestNewContextOptions()
+            {
+                BaseURL = "http://localhost:5103/",
+                IgnoreHTTPSErrors = true,
+            });
+        var bearerPost = await bearerContext.PostAsync("/oauth/token", new APIRequestContextOptions()
+        {
+            DataObject = clientCredentials
+        });
+
+        var tokenBody = await bearerPost.JsonAsync();
+
+        var token2 = tokenBody.GetValueOrDefault();
+        //await requestContext.GetAsync("https://api.example.com/login");
+        //// Save storage state into a variable.
+        //var state = await requestContext.StorageStateAsync();
+
+        //// Create a new context with the saved storage state.
+        //var context = await Browser.NewContextAsync(new() { StorageState = state });
 
 
 
@@ -53,7 +76,7 @@ public class APITestFixture : IAsyncLifetime
             {
                 BaseURL = "http://localhost:5103",
                 IgnoreHTTPSErrors = true,
-                ExtraHTTPHeaders = headers
+                ExtraHTTPHeaders = clientCredentials
             });
     } 
     
