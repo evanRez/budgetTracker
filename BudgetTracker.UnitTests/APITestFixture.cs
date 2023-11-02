@@ -3,8 +3,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.OpenApi.Models;
 using Microsoft.Playwright;
+using Newtonsoft.Json.Linq;
 using System.Configuration;
 using System.Reflection;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BudgetTracker.UnitTests;
 public class APITestFixture : IAsyncLifetime
@@ -22,13 +24,6 @@ public class APITestFixture : IAsyncLifetime
     public async Task InitializeAsync()
     {
 
-        //      headers: { 'content-type': 'application/x-www-form-urlencoded'},
-        //data: new URLSearchParams({
-        //  grant_type: 'client_credentials',
-        //  client_id: '{yourClientId}',
-        //  client_secret: 'YOUR_CLIENT_SECRET',
-        //  audience: '{yourApiIdentifier}'
-
         var configuration = new ConfigurationBuilder()
                .SetBasePath(Directory.GetCurrentDirectory())
                .AddJsonFile("appsettings.json")
@@ -40,19 +35,21 @@ public class APITestFixture : IAsyncLifetime
             { "grant_type", "client_credentials" },
             { "client_id", configuration.GetSection("Auth0:ClientIdM2M").Value.ToString() },
             { "client_secret", configuration.GetSection("Auth0:ClientSecretM2M").Value.ToString() },
-            { "audience", configuration.GetSection("Auth0:Audience").Value.ToString() },
-            //{ "access_token_url", configuration.GetSection("Auth0:TokenUrl").Value.ToString() },
-            { "scope", "write:transaction" }
+            { "audience", configuration.GetSection("Auth0:Audience").Value.ToString() }
         };
 
         var requestContext = await Playwright.CreateAsync();
 
+        var tokenUrl = $"https://{configuration.GetSection("Auth0:Domain").Value.ToString()}";
+
         var bearerContext = await requestContext.APIRequest.NewContextAsync(
             new APIRequestNewContextOptions()
             {
-                BaseURL = "http://localhost:5103/",
+                BaseURL = tokenUrl,
                 IgnoreHTTPSErrors = true,
             });
+
+
         var bearerPost = await bearerContext.PostAsync("/oauth/token", new APIRequestContextOptions()
         {
             DataObject = clientCredentials
@@ -60,14 +57,7 @@ public class APITestFixture : IAsyncLifetime
 
         var tokenBody = await bearerPost.JsonAsync();
 
-        var token2 = tokenBody.GetValueOrDefault();
-        //await requestContext.GetAsync("https://api.example.com/login");
-        //// Save storage state into a variable.
-        //var state = await requestContext.StorageStateAsync();
-
-        //// Create a new context with the saved storage state.
-        //var context = await Browser.NewContextAsync(new() { StorageState = state });
-
+        var accessToken = tokenBody.GetValueOrDefault().GetProperty("access_token").ToString();
 
 
         var playwrightContext = await Playwright.CreateAsync();
@@ -76,7 +66,10 @@ public class APITestFixture : IAsyncLifetime
             {
                 BaseURL = "http://localhost:5103",
                 IgnoreHTTPSErrors = true,
-                ExtraHTTPHeaders = clientCredentials
+                ExtraHTTPHeaders = new Dictionary<string, string>
+                {
+                    {"Authorization", $"Bearer {accessToken}" }
+                }
             });
     } 
     
