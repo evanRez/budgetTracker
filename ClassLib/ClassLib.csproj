@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Models/Users/" />
+    <Folder Include="Models\Users\" />
   </ItemGroup>
 
   <ItemGroup>

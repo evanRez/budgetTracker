@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ClassLib.Models.Users;
 using CsvHelper.Configuration.Attributes;
 
 namespace ClassLib.Models.Transactions;
@@ -27,6 +28,13 @@ public class TransactionDTO
     
     [Name("Credit")]
     public decimal? PaidBackAmount { get; set;}
+
+    [Required]
+    [Name("User Id")]
+    public string UserId { get; set; }
+
+    [Name("User")]
+    public UserDTO User { get; set; }
 }
 
 public class TransactionComparer : IEqualityComparer<TransactionDTO>

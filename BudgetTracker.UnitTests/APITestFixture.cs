@@ -1,12 +1,6 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.OpenApi.Models;
 using Microsoft.Playwright;
-using Newtonsoft.Json.Linq;
-using System.Configuration;
 using System.Reflection;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BudgetTracker.UnitTests;
 public class APITestFixture : IAsyncLifetime

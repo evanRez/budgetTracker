@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Security.Claims;
 using BudgetTracker.MinimalAPI.DataAccess;
 using BudgetTracker.MinimalAPI.Helpers.Interfaces;
 using ClassLib.Models.Transactions;
@@ -23,8 +24,10 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             trxs.MapDelete("/delete-from-csv", DeleteTransactionsCSV );
         }
         
-        public static async Task<Results<Ok<List<TransactionDTO>>,NotFound<string>>> GetAllTransactions(BudgetTrackerDb db)
+        public static async Task<Results<Ok<List<TransactionDTO>>,NotFound<string>>> GetAllTransactions(BudgetTrackerDb db, ClaimsPrincipal user)
         {
+            var userName = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var transactions =  await db.Transactions.ToListAsync();
             if (transactions.Any())
             {
