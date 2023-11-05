@@ -3,6 +3,7 @@ using System;
 using BudgetTracker.MinimalAPI.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BudgetTracker.MinimalAPI.Migrations
 {
     [DbContext(typeof(BudgetTrackerDb))]
-    partial class BudgetTrackerDbModelSnapshot : ModelSnapshot
+    [Migration("20231105014922_changeUserIdName")]
+    partial class changeUserIdName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

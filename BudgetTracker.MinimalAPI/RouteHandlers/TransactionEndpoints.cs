@@ -1,14 +1,15 @@
-﻿using System.Linq;
-using System.Security.Claims;
-using BudgetTracker.MinimalAPI.DataAccess;
+﻿using BudgetTracker.MinimalAPI.DataAccess;
+using BudgetTracker.MinimalAPI.DataAccess.Interfaces;
 using BudgetTracker.MinimalAPI.Helpers.Interfaces;
 using ClassLib.Models.Transactions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BudgetTracker.MinimalAPI.RouteHandlers
 {
+    //TODO: Extract User Id logic into a separate class and handle globally
     public static class TransactionEndpoints
     {
         public static void MapTransactionEndpoints(this IEndpointRouteBuilder app)
@@ -24,11 +25,13 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             trxs.MapDelete("/delete-from-csv", DeleteTransactionsCSV );
         }
         
-        public static async Task<Results<Ok<List<TransactionDTO>>,NotFound<string>>> GetAllTransactions(BudgetTrackerDb db, ClaimsPrincipal user)
+        public static async Task<Results<Ok<List<TransactionDTO>>,NotFound<string>>> GetAllTransactions([FromServices] BudgetTrackerDb db, ClaimsPrincipal user, [FromServices] IUserService userService)
         {
-            var userName = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = user.Claims.SingleOrDefault(x => x.Type == "auth0_user_id")?.Value;
 
-            var transactions =  await db.Transactions.ToListAsync();
+            var userDto = await userService.FindOrCreateUser(user);
+
+            var transactions =  await db.Transactions.Where(x => x.UserId == userId).ToListAsync();
             if (transactions.Any())
             {
                 return TypedResults.Ok(transactions);
@@ -39,22 +42,27 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             }
         }
 
-        public static async Task<Results<Ok<TransactionDTO>, NotFound<string>>> GetTransaction(BudgetTrackerDb db, int id)
+        public static async Task<Results<Ok<TransactionDTO>, NotFound<string>>> GetTransaction(BudgetTrackerDb db, int id, ClaimsPrincipal user)
         {
-            return await db.Transactions.FindAsync(id)
+            var userId = user.Claims.SingleOrDefault(x => x.Type == "auth0_user_id")?.Value;
+            return await db.Transactions.Where(x => x.UserId == userId && x.Id == id).FirstOrDefaultAsync()
                 is TransactionDTO transaction
                     ? TypedResults.Ok(transaction)
                     : TypedResults.NotFound($"Could not find a transaction with Id: {id}");
         }
 
-        public static async Task<Results<Created<TransactionDTO>,BadRequest>> AddTransaction(BudgetTrackerDb db, TransactionDTO dto)
+        public static async Task<Results<Created<TransactionDTO>,BadRequest>> AddTransaction(BudgetTrackerDb db, TransactionDTO dto, ClaimsPrincipal user)
         {
+            var userId = user.Claims.SingleOrDefault(x => x.Type == "auth0_user_id")?.Value;
+            dto.UserId = userId;
+
             if (await db.Transactions.FirstOrDefaultAsync(
                 t => t.InitiatedDate == dto.InitiatedDate 
                 && t.PostedDate == dto.PostedDate 
                 && t.Description == dto.Description
                 && t.SpentAmount == dto.SpentAmount
-                && t.PaidBackAmount == dto.PaidBackAmount) != null)
+                && t.PaidBackAmount == dto.PaidBackAmount
+                && t.UserId == userId) != null)
             {
                 return TypedResults.BadRequest();
             }
@@ -64,9 +72,10 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             return TypedResults.Created($"api/transactions/{dto.Id}", dto);
         }
 
-        public static async Task<Results<Ok<TransactionDTO>, NotFound<string>>> DeleteTransaction(BudgetTrackerDb db, int id)
+        public static async Task<Results<Ok<TransactionDTO>, NotFound<string>>> DeleteTransaction(BudgetTrackerDb db, int id, ClaimsPrincipal user)
         {
-            if (await db.Transactions.FindAsync(id) is TransactionDTO trnx)
+            var userId = user.Claims.SingleOrDefault(x => x.Type == "auth0_user_id")?.Value;
+            if (await db.Transactions.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId) is TransactionDTO trnx)
             {
                 db.Transactions.Remove(trnx);
                 await db.SaveChangesAsync();
@@ -76,12 +85,15 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             return TypedResults.NotFound($"Could not delete Transaction {id}.");
         }
 
-        public static async Task<Results<Ok<TransactionDTO>, NotFound<string>>> UpdateTransaction(BudgetTrackerDb db, TransactionDTO trnx)
+        public static async Task<Results<Ok<TransactionDTO>, NotFound<string>>> UpdateTransaction(BudgetTrackerDb db, TransactionDTO trnx, ClaimsPrincipal user)
         {
+            var userId = user.Claims.SingleOrDefault(x => x.Type == "auth0_user_id")?.Value;
+            var userEmail = user.Claims.SingleOrDefault(x => x.Type == "auth0_email")?.Value;
+            trnx.UserId = userId;
             //db.Update(trnx);
-            var rec = await db.Transactions.FindAsync(trnx.Id);
+            var rec = await db.Transactions.FirstOrDefaultAsync(x => x.Id == trnx.Id && x.UserId == userId);
 
-            if (rec is null) return TypedResults.NotFound($"No transaction found for {trnx.Id}");
+            if (rec is null) return TypedResults.NotFound($"No transaction found for Id: {trnx.Id} associated with {userEmail}");
 
             db.Entry(rec).CurrentValues.SetValues(trnx);
 
@@ -90,12 +102,15 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             return TypedResults.Ok(rec);
         }
 
-        public static async Task<Results<Ok<List<TransactionDTO>>, Ok<string>,BadRequest<string>>> AddTransactionsCSV([FromForm] IFormFile file, [FromServices] BudgetTrackerDb db, [FromServices] ICsvService csvService )
+        public static async Task<Results<Ok<List<TransactionDTO>>, Ok<string>,BadRequest<string>>> AddTransactionsCSV([FromForm] IFormFile file, [FromServices] BudgetTrackerDb db, [FromServices] ICsvService csvService, ClaimsPrincipal user)
         {
+            var userId = user.Claims.SingleOrDefault(x => x.Type == "auth0_user_id")?.Value;
             try 
             {
                 using var stream = file.OpenReadStream();
                 var trxns = csvService.ReadCSV<TransactionDTO>(stream).ToList();
+                //Manaually iterating over and setting the user Id to match the one coming from httpcontext
+                trxns.ForEach(t => t.UserId = userId);
                
                 var filteredTrxns = trxns
                     .Where( trx => !db.Transactions
@@ -103,7 +118,8 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
                             && t.PostedDate == trx.PostedDate
                             && t.Description == trx.Description
                             && t.SpentAmount == trx.SpentAmount
-                            && t.PaidBackAmount == trx.PaidBackAmount)).ToList();
+                            && t.PaidBackAmount == trx.PaidBackAmount
+                            && t.UserId == trx.UserId)).ToList();
 
                 if (!filteredTrxns.Any())
                 {
@@ -117,7 +133,8 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
                         nr => nr.Description == x.Description
                         && nr.PostedDate == x.PostedDate
                         && nr.InitiatedDate == x.InitiatedDate
-                        && nr.SpentAmount == x.SpentAmount))
+                        && nr.SpentAmount == x.SpentAmount)
+                        && x.UserId == userId)
                         .ToList();
 
                 return TypedResults.Ok(newRecordsWithId);
@@ -129,12 +146,14 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
             }
         }
 
-        public static async Task<Results<Ok<List<TransactionDTO>>,Ok<string>, BadRequest<string>>> DeleteTransactionsCSV([FromForm] IFormFile file, [FromServices] BudgetTrackerDb db, [FromServices] ICsvService csvService )
+        public static async Task<Results<Ok<List<TransactionDTO>>,Ok<string>, BadRequest<string>>> DeleteTransactionsCSV([FromForm] IFormFile file, [FromServices] BudgetTrackerDb db, [FromServices] ICsvService csvService, ClaimsPrincipal user)
         {
+            var userId = user.Claims.SingleOrDefault(x => x.Type == "auth0_user_id")?.Value;
             try 
             {
                 using var stream = file.OpenReadStream();
                 var trxns = csvService.ReadCSV<TransactionDTO>(stream).ToList();
+                trxns.ForEach(t => t.UserId = userId);
                 var trxComparer = new TransactionComparer();
 
                 //TODO: Improve performance, convert to async

@@ -3,6 +3,7 @@ using System;
 using BudgetTracker.MinimalAPI.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BudgetTracker.MinimalAPI.Migrations
 {
     [DbContext(typeof(BudgetTrackerDb))]
-    partial class BudgetTrackerDbModelSnapshot : ModelSnapshot
+    [Migration("20231105002228_FKRelationsPt2")]
+    partial class FKRelationsPt2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,13 +49,13 @@ namespace BudgetTracker.MinimalAPI.Migrations
                     b.Property<decimal?>("SpentAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("UserDTOId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserDTOId");
 
                     b.ToTable("Transactions");
                 });
@@ -60,6 +63,10 @@ namespace BudgetTracker.MinimalAPI.Migrations
             modelBuilder.Entity("ClassLib.Models.Users.UserDTO", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Auth0UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -87,13 +94,13 @@ namespace BudgetTracker.MinimalAPI.Migrations
 
             modelBuilder.Entity("ClassLib.Models.Transactions.TransactionDTO", b =>
                 {
-                    b.HasOne("ClassLib.Models.Users.UserDTO", "User")
+                    b.HasOne("ClassLib.Models.Users.UserDTO", "UserDTO")
                         .WithMany("Transactions")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserDTOId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("UserDTO");
                 });
 
             modelBuilder.Entity("ClassLib.Models.Users.UserDTO", b =>

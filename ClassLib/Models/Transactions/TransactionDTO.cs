@@ -31,6 +31,7 @@ public class TransactionDTO
 
     [Required]
     [Name("User Id")]
+    //[ForeignKey("UserDTO")]
     public string UserId { get; set; }
 
     [Name("User")]
@@ -46,7 +47,8 @@ public class TransactionComparer : IEqualityComparer<TransactionDTO>
         && x.InitiatedDate == y.InitiatedDate
         && x.PostedDate == y.PostedDate
         && x.SpentAmount == y.SpentAmount
-        && x.PaidBackAmount == y.PaidBackAmount;
+        && x.PaidBackAmount == y.PaidBackAmount
+        && x.UserId == y.UserId;
     }
 
     public int GetHashCode(TransactionDTO trx)
@@ -56,6 +58,7 @@ public class TransactionComparer : IEqualityComparer<TransactionDTO>
         			^ trx.InitiatedDate.GetHashCode()
                     ^ trx.PostedDate.GetHashCode()
                     ^ trx.SpentAmount.GetHashCode()
-                    ^ trx.PaidBackAmount.GetHashCode();
+                    ^ trx.PaidBackAmount.GetHashCode()
+                    ^ trx.UserId.GetHashCode();
     }
 }
