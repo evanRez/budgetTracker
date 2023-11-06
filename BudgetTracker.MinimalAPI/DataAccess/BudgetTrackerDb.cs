@@ -17,6 +17,7 @@ namespace BudgetTracker.MinimalAPI.DataAccess
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .AddUserSecrets(Assembly.GetExecutingAssembly())
+                .AddEnvironmentVariables()
                 .Build();
 
             var connectionString = configuration["ConnectionStrings:Postgres"];

@@ -9,13 +9,13 @@ using System.Security.Claims;
 
 namespace BudgetTracker.MinimalAPI.RouteHandlers
 {
-    //TODO: Extract User Id logic into a separate class and handle globally
+    //TODO: Find a way to do this without adding auth0 user id to each request
     public static class TransactionEndpoints
     {
         public static void MapTransactionEndpoints(this IEndpointRouteBuilder app)
         {
             var trxs = app.MapGroup("api/transactions")
-                .RequireAuthorization("write:transaction"); //TODO: Add more appropriate Auth policy / role
+                .RequireAuthorization("write:transaction");
             trxs.MapGet("", GetAllTransactions );
             trxs.MapGet("{id}", GetTransaction );
             trxs.MapPost("", AddTransaction );

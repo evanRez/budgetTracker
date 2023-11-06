@@ -22,6 +22,7 @@ public class APITestFixture : IAsyncLifetime
                .SetBasePath(Directory.GetCurrentDirectory())
                .AddJsonFile("appsettings.json")
                .AddUserSecrets(Assembly.GetExecutingAssembly())
+               .AddEnvironmentVariables()
                .Build();
 
         var clientCredentials = new Dictionary<string, string>
