@@ -9,6 +9,7 @@ EXPOSE 8123
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["BudgetTracker.MinimalAPI/BudgetTracker.MinimalAPI.csproj", "BudgetTracker.MinimalAPI/"]
+COPY ["ClassLib/ClassLib.csproj", "ClassLib/"]
 RUN dotnet restore "BudgetTracker.MinimalAPI/BudgetTracker.MinimalAPI.csproj"
 COPY . .
 WORKDIR "/src/BudgetTracker.MinimalAPI"
