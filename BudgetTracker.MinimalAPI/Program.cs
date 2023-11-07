@@ -21,7 +21,7 @@ builder.Services.AddScoped<ICsvService, CsvService>();
 //builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IUserService, UserService>();
 
-
+builder.WebHost.UseUrls( "http://*:5103", "https://0.0.0.0:7148");
 
 var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -90,6 +90,8 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapTransactionEndpoints();
+
+
 
 app.MapGet("/", () => "Hello World!");
 
