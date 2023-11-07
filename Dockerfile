@@ -6,6 +6,7 @@ EXPOSE 7148
 EXPOSE 5103
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+RUN dotnet dev-certs https
 WORKDIR /src
 COPY ["BudgetTracker.MinimalAPI/BudgetTracker.MinimalAPI.csproj", "BudgetTracker.MinimalAPI/"]
 COPY ["ClassLib/ClassLib.csproj", "ClassLib/"]
@@ -19,5 +20,6 @@ RUN dotnet publish "BudgetTracker.MinimalAPI.csproj" -c Release -o /app/publish 
 
 FROM base AS final
 WORKDIR /app
+COPY --from=publish /root/.dotnet/corefx/cryptography/x509stores/my/* /root/.dotnet/corefx/cryptography/x509stores/my/
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "BudgetTracker.MinimalAPI.dll"]
