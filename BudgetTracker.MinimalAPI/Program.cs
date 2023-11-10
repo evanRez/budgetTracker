@@ -21,7 +21,9 @@ builder.Services.AddScoped<ICsvService, CsvService>();
 //builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IUserService, UserService>();
 
-builder.WebHost.UseUrls( "http://+:5103", "https://+:7148");
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8081";
+builder.WebHost.UseUrls($"http://*:{port}");
+
 
 var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
