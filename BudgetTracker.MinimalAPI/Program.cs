@@ -22,7 +22,7 @@ builder.Services.AddScoped<ICsvService, CsvService>();
 builder.Services.AddTransient<IUserService, UserService>();
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8081";
-builder.WebHost.UseUrls($"http://*:{port}");
+builder.WebHost.UseUrls($"https://*:{port}");
 
 
 var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
