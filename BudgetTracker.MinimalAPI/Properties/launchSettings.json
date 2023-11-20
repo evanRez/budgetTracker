@@ -39,8 +39,6 @@
     "iisExpress": {
       "applicationUrl": "http://0.0.0.0:5064",
       "sslPort": 44393
-      //"applicationUrl": "http://localhost:5064",
-      //"sslPort": 5104 why doesn't this work?
     }
   }
 }
