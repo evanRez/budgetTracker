@@ -11,7 +11,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 RUN dotnet dev-certs https
 WORKDIR /src
 COPY ["BudgetTracker.MinimalAPI/BudgetTracker.MinimalAPI.csproj", "BudgetTracker.MinimalAPI/"]
-RUN dotnet restore "BudgetTracker.MinimalAPI/BudgetTracker.MinimalAPI.csproj"
+RUN dotnet restore "./BudgetTracker.MinimalAPI/BudgetTracker.MinimalAPI.csproj"
 COPY . .
 WORKDIR "/src/BudgetTracker.MinimalAPI"
 RUN dotnet build "BudgetTracker.MinimalAPI.csproj" -c Release -o /app/build
