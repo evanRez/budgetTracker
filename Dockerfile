@@ -21,4 +21,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /root/.dotnet/corefx/cryptography/x509stores/my/* /root/.dotnet/corefx/cryptography/x509stores/my/
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "BudgetTracker.MinimalAPI.dll"]
+ENTRYPOINT ["dotnet", "BudgetTracker.MinimalAPI.dll", "--urls=http://0.0.0.0:7148"]
