@@ -14,8 +14,8 @@ namespace BudgetTracker.MinimalAPI.RouteHandlers
     {
         public static void MapTransactionEndpoints(this IEndpointRouteBuilder app)
         {
-            var trxs = app.MapGroup("api/transactions")
-                .RequireAuthorization("write:transaction");
+            var trxs = app.MapGroup("api/transactions");
+                //.RequireAuthorization("write:transaction");
             trxs.MapGet("", GetAllTransactions );
             trxs.MapGet("{id}", GetTransaction );
             trxs.MapPost("", AddTransaction );
